@@ -34,7 +34,7 @@ requestsRouter.get('/allRequests', bearerAuth, permissions('delete'), async (req
 });
 
 
-requestsRouter.get('/myRequests', bearerAuth, permissions('read'), async (req, res, next) => {
+requestsRouter.post('/myRequests', bearerAuth, permissions('read'), async (req, res, next) => {
    const userId = req.body.userId;
    console.log(userId);
     try {

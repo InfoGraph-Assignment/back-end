@@ -39,7 +39,19 @@ const UserModel = (sequelize, DataTypes) => {
 
         address: {
             type: DataTypes.STRING,
+            allowNull : false
         },
+
+        gender:{
+            type : DataTypes.STRING,
+            allowNull : false
+        },
+
+        birthDate :{
+            type : DataTypes.STRING,
+            allowNull : false
+        },
+        
 
         role: {
             type: DataTypes.ENUM('admin', 'customer'),
@@ -61,6 +73,8 @@ const UserModel = (sequelize, DataTypes) => {
         token : {
             type: DataTypes.VIRTUAL,
             get() {
+                let createdAt = new Date(this.createdAt).toLocaleDateString();
+                createdAt = createdAt.split("/")[1] + " / " + createdAt.split("/")[0] + " / " + createdAt.split("/")[2]  
                 return jwt.sign({
                     id: this.id,
                     userName : this.userName,
@@ -68,7 +82,10 @@ const UserModel = (sequelize, DataTypes) => {
                     role: this.role,
                     capabilities: this.capabilities,
                     address: this.address,
-                    phone: this.phone
+                    phone: this.phone,
+                    gender : this.gender,
+                    birthDate : this.birthDate,
+                    createdAt : createdAt
 
                 }, process.env.JWT_SECRET || 'secret');
             },
@@ -100,6 +117,7 @@ const UserModel = (sequelize, DataTypes) => {
 
 
     User.authenticateToken = (token) => {
+        console.log(token);
         return jwt.verify(token, process.env.JWT_SECRET || 'secret', (err, decoded) => {
             if (err) {
                 throw new Error("Invalid token");
